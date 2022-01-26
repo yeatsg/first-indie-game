@@ -6,7 +6,7 @@ canvas.height = 600;
 // Images characterMovement sprite sheet //
 
 const stevenFrameLeft = new Image();
-stevenFrameLeft.src = "../images/spritesheet-beta-test-3.png";
+stevenFrameLeft.src = "../images/walkcycle-spritesheet-1.png";
 
 const backgroundPlate = new Image();
 backgroundPlate.src = "../images/background-beta-test.png";
@@ -147,6 +147,9 @@ class GenericObject {
   }
 
   update(direction) {
+    if (limbStages !== 4 && scrollOffset > 3100) {
+      console.log("reset");
+    }
     if (direction === "ArrowLeft") {
       scrollOffset += 5;
       this.x += this.velocity;
