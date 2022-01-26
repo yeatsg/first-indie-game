@@ -5,8 +5,14 @@ canvas.height = 600;
 
 // Images characterMovement sprite sheet //
 
-const stevenFrameLeft = new Image();
-stevenFrameLeft.src = "../images/walkcycle-spritesheet-1.png";
+const stevenSliceOne = new Image();
+stevenSliceOne.src = "../images/walkcycle-slice1.png";
+const stevenSliceTwo = new Image();
+stevenSliceTwo.src = "../images/walkcycle-slice2.png";
+const stevenSliceThree = new Image();
+stevenSliceThree.src = "../images/walkcycle-slice3.png";
+const stevenSliceFour = new Image();
+stevenSliceFour.src = "../images/walkcycle-slice4.png";
 
 const backgroundPlate = new Image();
 backgroundPlate.src = "../images/background-beta-test.png";
@@ -35,9 +41,9 @@ class Player {
     this.w = 500;
     this.h = 500;
     this.velocity = 5;
-    this.image = stevenFrameLeft;
     this.frames = 0;
     this.slices = 1;
+    this.image = stevenSliceOne;
   }
 
   draw() {
@@ -55,38 +61,54 @@ class Player {
   }
 
   update(direction) {
-    if (endBackground || startBackground) {
-      console.log("START OR END status in effect");
-    } else {
-      if (direction === "ArrowLeft") {
-        this.frames++;
-        if (this.frames > 28) {
-          this.frames = 1;
-        }
-        this.x += this.velocity;
-        if (canMoveL === true) {
-          this.velocity = -5;
-        } else {
-          this.velocity = 0;
-        }
-        this.draw();
-      }
+    // if (endBackground || startBackground) {
+    //   console.log("START OR END status in effect");
+    // } else {
 
-      if (direction === "ArrowRight") {
-        this.frames--;
-        if (this.frames < 1) {
-          this.frames = 28;
-        }
-        this.x += this.velocity;
-        if (canMoveR) {
-          this.velocity = 5;
-        } else {
-          this.velocity = 0;
-        }
-        this.draw();
+    if (direction === "ArrowLeft") {
+      this.frames++;
+      if (this.frames > 28) {
+        this.frames = 1;
       }
+      this.x += this.velocity;
+      if (canMoveL === true) {
+        this.velocity = -5;
+      } else {
+        this.velocity = 0;
+      }
+      this.draw();
+    }
+
+    if (direction === "ArrowRight") {
+      this.frames--;
+      if (this.frames < 1) {
+        this.frames = 28;
+      }
+      this.x += this.velocity;
+      if (canMoveR) {
+        this.velocity = 5;
+      } else {
+        this.velocity = 0;
+      }
+      this.draw();
     }
   }
+  collisionResponse() {
+    if (this.slices === 1) {
+      this.image = stevenSliceOne;
+    } else if (this.slices === 2) {
+      this.image = stevenSliceTwo;
+    } else if (this.slices === 3) {
+      this.image = stevenSliceThree;
+    } else if (this.slices === 4) {
+      this.image = stevenSliceFour;
+    } else if (this.slices > 4) {
+      this.slices = 4;
+    } else {
+      this.slices === 1;
+    }
+  }
+  // }
 }
 
 //razorblade object class//
