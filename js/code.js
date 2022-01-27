@@ -15,10 +15,14 @@ const stevenSliceFour = new Image();
 stevenSliceFour.src = "../images/walkcycle-slice4.png";
 
 const backgroundPlate = new Image();
-backgroundPlate.src = "../images/background-beta-test.png";
+backgroundPlate.src = "../images/background-test-2.png";
 
 const razorbladeSprites = new Image();
 razorbladeSprites.src = "../images/razor-spritesheet.png";
+
+const musicalScore = new Audio();
+musicalScore.src = "../audio/ost-hallway-loop.mp3";
+musicalScore.loop = true;
 
 // variables for class objects //
 
@@ -94,18 +98,18 @@ class Player {
     }
   }
   collisionResponse() {
-    if (this.slices === 1) {
+    if (limbStages === 1) {
       this.image = stevenSliceOne;
-    } else if (this.slices === 2) {
+    } else if (limbStages === 2) {
       this.image = stevenSliceTwo;
-    } else if (this.slices === 3) {
+    } else if (limbStages === 3) {
       this.image = stevenSliceThree;
-    } else if (this.slices === 4) {
+    } else if (limbStages === 4) {
       this.image = stevenSliceFour;
-    } else if (this.slices > 4) {
-      this.slices = 4;
+    } else if (limbStages > 4) {
+      limbStages = 4;
     } else {
-      this.slices === 1;
+      limbStages === 1;
     }
   }
   // }
@@ -114,9 +118,9 @@ class Player {
 //razorblade object class//
 
 class Object {
-  constructor(y) {
+  constructor() {
     this.x = -1000;
-    this.y = y;
+    this.y = 80;
     this.image = razorbladeSprites;
     this.w = 400;
     this.h = 400;
@@ -136,20 +140,47 @@ class Object {
       this.w,
       this.h
     );
+    if (limbStages < 4) {
+      this.frames++;
+      if (this.frames > 8) {
+        this.frames = 0;
+      }
+    }
   }
 
   update() {
-    this.frames++;
-    if (this.frames > 8) {
-      this.frames = 0;
-    }
-    this.x += this.velocity;
     this.draw();
+    if (limbStages === 1 && scrollOffset > 1200) {
+      this.x += this.velocity;
+    }
+    if (limbStages === 2 && scrollOffset > 2100) {
+      this.velocity = 20;
+      this.x += this.velocity;
+    }
+    if (limbStages === 3 && scrollOffset > 2500) {
+      this.velocity = 20;
+      this.x += this.velocity;
+    }
   }
 
-  // update() {
-
-  // }
+  collisionResponse() {
+    if (limbStages === 1) {
+      this.y = 50;
+    } else if (limbStages === 2) {
+      this.x = -500;
+      this.y = 150;
+      this.velocity = 0;
+    } else if (limbStages === 3) {
+      this.x = -500;
+      this.y = 225;
+      this.velocity = 0;
+      // Might be able to delete the code below //
+    } else if (limbStages === 4) {
+      this.x = -500;
+      this.y = -500;
+      this.velocity = 0;
+    }
+  }
 }
 
 // generic object classes //
@@ -169,38 +200,41 @@ class GenericObject {
   }
 
   update(direction) {
-    if (limbStages !== 4 && scrollOffset > 3100) {
-      console.log("reset");
-    }
-    if (direction === "ArrowLeft") {
-      scrollOffset += 5;
-      this.x += this.velocity;
-      if (!canMoveL) {
-        this.velocity = 5;
-      } else {
-        this.velocity = 0;
+    if (this.x < canvas.width * -3) {
+      this.velocity = 0;
+    } else if (this.x > 0) {
+      this.velocity = 0;
+    } else {
+      if (direction === "ArrowLeft") {
+        scrollOffset += 5;
+        this.x += this.velocity;
+        if (!canMoveL) {
+          this.velocity = 5;
+        } else {
+          this.velocity = 0;
+        }
+        this.draw();
       }
-      this.draw();
-    }
 
-    if (direction === "ArrowRight") {
-      scrollOffset -= 5;
-      this.x += this.velocity;
-      if (!canMoveR) {
-        this.velocity = -5;
-      } else {
-        this.velocity = 0;
+      if (direction === "ArrowRight") {
+        scrollOffset -= 5;
+        this.x += this.velocity;
+        if (!canMoveR) {
+          this.velocity = -5;
+        } else {
+          this.velocity = 0;
+        }
+        this.draw();
       }
-      this.draw();
     }
   }
 }
-
 // vital variables //
 
 let game;
 
 const steven = new Player();
+const razorblade = new Object();
 const background = new GenericObject(
   canvas.width * -3,
   0,
@@ -208,8 +242,6 @@ const background = new GenericObject(
   canvas.width * 4,
   canvas.height
 );
-
-const razorblade = new Object(100);
 
 // animation begins //
 
@@ -219,6 +251,9 @@ function animate() {
   background.draw();
   razorblade.update();
   steven.draw();
+  musicalScore.play();
+
+  // Move barricade/functionality//
 
   if (steven.x > 300) {
     canMoveL = true;
@@ -232,8 +267,24 @@ function animate() {
     canMoveR = false;
   }
 
-  if (scrollOffset > 3900) {
+  // Collision functioning
+
+  didCollide = detectCollision(steven, razorblade);
+  if (didCollide) {
+    limbStages++;
+    razorblade.collisionResponse();
+    steven.collisionResponse();
+  }
+
+  // Win conditions
+
+  if (scrollOffset > 3300) {
     console.log("You win!");
+  }
+
+  // next win condition
+  if (background.x < -3001) {
+    console.log("You win for real!");
   }
 }
 
@@ -249,5 +300,18 @@ document.addEventListener("keydown", function (e) {
       break;
   }
 });
+
+function detectCollision(player, obj) {
+  if (
+    player.x + player.w / 2 < obj.x + obj.w &&
+    player.x + player.w / 2 > obj.x &&
+    player.y < obj.y + obj.h &&
+    player.y + player.h > obj.y
+  ) {
+    return true;
+  } else {
+    return false;
+  }
+}
 
 animate();
