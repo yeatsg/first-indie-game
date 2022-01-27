@@ -6,28 +6,28 @@ canvas.height = 600;
 // Images characterMovement sprite sheet //
 
 const stevenSliceOne = new Image();
-stevenSliceOne.src = "../images/walkcycle-slice1.png";
+stevenSliceOne.src = "images/walkcycle-slice1.png";
 stevenSliceOne.onload = () => {};
 const stevenSliceTwo = new Image();
-stevenSliceTwo.src = "../images/walkcycle-slice2.png";
+stevenSliceTwo.src = "images/walkcycle-slice2.png";
 stevenSliceTwo.onload = () => {};
 const stevenSliceThree = new Image();
-stevenSliceThree.src = "../images/walkcycle-slice3.png";
+stevenSliceThree.src = "images/walkcycle-slice3.png";
 stevenSliceThree.onload = () => {};
 const stevenSliceFour = new Image();
-stevenSliceFour.src = "../images/walkcycle-slice4.png";
+stevenSliceFour.src = "images/walkcycle-slice4.png";
 stevenSliceFour.onload = () => {};
 
 const backgroundPlate = new Image();
-backgroundPlate.src = "../images/background-test-2.png";
+backgroundPlate.src = "images/background-test-2.png";
 backgroundPlate.onload = () => {};
 
 const razorbladeSprites = new Image();
-razorbladeSprites.src = "../images/razor-spritesheet.png";
+razorbladeSprites.src = "images/razor-spritesheet.png";
 razorbladeSprites.onload = () => {};
 
 const musicalScore = new Audio();
-musicalScore.src = "../audio/ost-hallway-loop.mp3";
+musicalScore.src = "audio/ost-hallway-loop.mp3";
 musicalScore.loop = true;
 
 const introText =
