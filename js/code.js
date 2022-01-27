@@ -7,22 +7,39 @@ canvas.height = 600;
 
 const stevenSliceOne = new Image();
 stevenSliceOne.src = "../images/walkcycle-slice1.png";
+stevenSliceOne.onload = () => {};
 const stevenSliceTwo = new Image();
 stevenSliceTwo.src = "../images/walkcycle-slice2.png";
+stevenSliceTwo.onload = () => {};
 const stevenSliceThree = new Image();
 stevenSliceThree.src = "../images/walkcycle-slice3.png";
+stevenSliceThree.onload = () => {};
 const stevenSliceFour = new Image();
 stevenSliceFour.src = "../images/walkcycle-slice4.png";
+stevenSliceFour.onload = () => {};
 
 const backgroundPlate = new Image();
 backgroundPlate.src = "../images/background-test-2.png";
+backgroundPlate.onload = () => {};
 
 const razorbladeSprites = new Image();
 razorbladeSprites.src = "../images/razor-spritesheet.png";
+razorbladeSprites.onload = () => {};
 
 const musicalScore = new Audio();
 musicalScore.src = "../audio/ost-hallway-loop.mp3";
 musicalScore.loop = true;
+
+const introText =
+  '"A special prize on the other side of this door?" I never do anything to treat myself. Sure, I\'ll give it a shot.';
+
+const lose1 = "It's a hat!";
+const lose2 = "Maybe you know somebody who could use this.";
+const lose3 = "YOU WON?";
+
+const win1 = "YOU WON!";
+const win2 =
+  "Sometimes it's good to try new things. But sometimes new things are scary and it's better to do nothing.";
 
 // variables for class objects //
 
@@ -232,6 +249,7 @@ class GenericObject {
 // vital variables //
 
 let game;
+let eventListener;
 
 const steven = new Player();
 const razorblade = new Object();
@@ -274,21 +292,24 @@ function animate() {
     limbStages++;
     razorblade.collisionResponse();
     steven.collisionResponse();
+    otherCollisionResponse();
   }
 
   // Win conditions
 
   if (scrollOffset > 3300) {
-    console.log("You win!");
+    ctx.font = "48px serif";
+    gameLose();
   }
 
   // next win condition
   if (background.x < -3001) {
     console.log("You win for real!");
+    gameWin();
   }
 }
 
-document.addEventListener("keydown", function (e) {
+function move(e) {
   switch (e.code) {
     case "ArrowLeft":
       steven.update("ArrowLeft");
@@ -299,7 +320,25 @@ document.addEventListener("keydown", function (e) {
       background.update("ArrowRight");
       break;
   }
-});
+}
+
+document.addEventListener("keydown", move);
+
+function otherCollisionResponse() {
+  ctx.globalAlpha = 0.75;
+  ctx.fillStyle = "rgb(245, 54, 54)";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.clearRect;
+  ctx.fillStyle = "rgb(212, 15, 15)";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.clearRect;
+  ctx.fillStyle = "rgb(150, 0, 0)";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.clearRect;
+  ctx.fillStyle = "rgb(212, 15, 15)";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.clearRect;
+}
 
 function detectCollision(player, obj) {
   if (
@@ -312,6 +351,28 @@ function detectCollision(player, obj) {
   } else {
     return false;
   }
+}
+
+function gameLose() {
+  document.removeEventListener("keydown", move);
+  window.cancelAnimationFrame(game);
+  ctx.fillStyle = "black";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = "red";
+  ctx.fillText(lose1, 160, 30);
+  ctx.fillStyle = "white";
+  ctx.fillText(lose2, 200, 500);
+}
+
+function gameWin() {
+  document.removeEventListener("keydown", move);
+  window.cancelAnimationFrame(game);
+  ctx.fillStyle = "black";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = "red";
+  ctx.fillText(win1, 160, 30);
+  ctx.fillStyle = "white";
+  ctx.fillText(win2, 200, 500);
 }
 
 animate();
