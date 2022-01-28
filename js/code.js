@@ -19,12 +19,40 @@ stevenSliceFour.src = "images/walkcycle-slice4.png";
 stevenSliceFour.onload = () => {};
 
 const backgroundPlate = new Image();
-backgroundPlate.src = "images/background-test-2.png";
+backgroundPlate.src = "images/background.png";
 backgroundPlate.onload = () => {};
 
 const razorbladeSprites = new Image();
 razorbladeSprites.src = "images/razor-spritesheet.png";
 razorbladeSprites.onload = () => {};
+
+const redHat = new Image();
+redHat.src = "images/hat.png";
+redHat.onload = () => {};
+
+const introScreen = new Image();
+introScreen.src = "images/intro-screen";
+introScreen.onload = () => {};
+
+const gameLoseScreen = new Image();
+gameLoseScreen.src = "images/final-screen-1.png";
+gameLoseScreen.onload = () => {};
+
+const stevenScream = new Audio();
+stevenScream.src = "audio/fx-male-scream.wav";
+stevenScream.onload = () => {};
+
+const sliceImpact = new Audio();
+sliceImpact.src = "audio/fx-chop-flesh.wav";
+sliceImpact.onload = () => {};
+
+const bladeReady = new Audio();
+bladeReady.src = "audio/fx-sword-scrape.wav";
+bladeReady.onload = () => {};
+
+const victorySfx = new Audio();
+victorySfx.src = "audio/fx-magic-chimes.wav";
+victorySfx.onload = () => {};
 
 const musicalScore = new Audio();
 musicalScore.src = "audio/ost-hallway-loop.mp3";
@@ -38,8 +66,9 @@ const lose2 = "Maybe you know somebody who could use this.";
 const lose3 = "YOU WON?";
 
 const win1 = "YOU WON!";
-const win2 =
-  "Sometimes it's good to try new things. But sometimes new things are scary and it's better to do nothing.";
+const win2 = "Sometimes it's good to try new things.";
+const win3 = "But sometimes new things are scary";
+const win4 = "and it's better to do nothing.";
 
 // variables for class objects //
 
@@ -82,10 +111,6 @@ class Player {
   }
 
   update(direction) {
-    // if (endBackground || startBackground) {
-    //   console.log("START OR END status in effect");
-    // } else {
-
     if (direction === "ArrowLeft") {
       this.frames++;
       if (this.frames > 28) {
@@ -261,7 +286,14 @@ const background = new GenericObject(
   canvas.height
 );
 
-// animation begins //
+// window.onload = () => {
+//   ctx.drawImage(introScreen, 0, 0, canvas.width, canvas.height);
+//   // document.getElementById("start-button").onclick = () => {
+//   //   startGame();
+//   // };
+// };
+
+// // animation begins //
 
 function animate() {
   game = window.requestAnimationFrame(animate);
@@ -285,6 +317,13 @@ function animate() {
     canMoveR = false;
   }
 
+  if (scrollOffset === 1200) {
+    bladeReady.play();
+  }
+
+  if (scrollOffset === 2100) {
+    bladeReady.play();
+  }
   // Collision functioning
 
   didCollide = detectCollision(steven, razorblade);
@@ -298,7 +337,7 @@ function animate() {
   // Win conditions
 
   if (scrollOffset > 3300) {
-    ctx.font = "48px serif";
+    ctx.font = "48px tahoma";
     gameLose();
   }
 
@@ -325,7 +364,7 @@ function move(e) {
 document.addEventListener("keydown", move);
 
 function otherCollisionResponse() {
-  ctx.globalAlpha = 0.75;
+  // ctx.globalAlpha = 0.75;
   ctx.fillStyle = "rgb(245, 54, 54)";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   ctx.clearRect;
@@ -338,6 +377,8 @@ function otherCollisionResponse() {
   ctx.fillStyle = "rgb(212, 15, 15)";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   ctx.clearRect;
+  stevenScream.play();
+  sliceImpact.play();
 }
 
 function detectCollision(player, obj) {
@@ -355,24 +396,33 @@ function detectCollision(player, obj) {
 
 function gameLose() {
   document.removeEventListener("keydown", move);
-  window.cancelAnimationFrame(game);
+  victorySfx.play();
   ctx.fillStyle = "black";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
-  ctx.fillStyle = "red";
-  ctx.fillText(lose1, 160, 30);
+  ctx.drawImage(redHat, canvas.width / 2 - 250, 50, 500, 500);
   ctx.fillStyle = "white";
-  ctx.fillText(lose2, 200, 500);
+  ctx.fillText(lose1, canvas.width / 2 - 100, 100);
+  ctx.font = "80px tahoma";
+  ctx.fillStyle = "white";
+  ctx.fillText(lose3, canvas.width / 2 - 200, 450);
+  ctx.font = "30px tahoma";
+  ctx.fillStyle = "white";
+  ctx.fillText(lose2, 200, 550);
 }
 
 function gameWin() {
   document.removeEventListener("keydown", move);
-  window.cancelAnimationFrame(game);
   ctx.fillStyle = "black";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
-  ctx.fillStyle = "red";
-  ctx.fillText(win1, 160, 30);
+  ctx.font = "80px tahoma";
   ctx.fillStyle = "white";
-  ctx.fillText(win2, 200, 500);
+  ctx.fillText(win1, canvas.width / 2 - 200, 100);
+  ctx.font = "40px tahoma";
+  ctx.fillText(win2, 120, 200);
+  ctx.fillText(win3, 140, 350);
+  ctx.fillText(win4, 180, 500);
 }
 
+// function startGame() {
 animate();
+// }
